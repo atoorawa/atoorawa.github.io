@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Tools</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #101040;
+            color: white;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .button-bar {
+            display: flex;
+            justify-content: space-around;
+            background-color: #333366;
+            padding: 10px 0;
+            border-bottom: 2px solid #555;
+        }
+
+        .button-bar button {
+            background-color: #555;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            cursor: pointer;
+            border-radius: 20px;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .button-bar button:hover {
+            background-color: #777;
+        }
+
+        .tool-box {
+            background-color: #222244;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .tool-box p {
+            color: #a0a0d0;
+            font-size: 24px; /* Increase font size for outputs */
+            font-weight: bold; /* Bolden the outputs */
+        }
+
+        input[type="number"],
+        input[type="text"],
+        input[type="button"] {
+            padding: 12px;
+            margin-right: 10px;
+            border: none;
+            border-radius: 20px;
+            font-size: 18px;
+            background-color: #333366;
+            color: white;
+            width: 80%;
+            text-align: center;
+        }
+
+        .center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .team-box {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .team-name {
+            color: #555;
+            font-size: 24px;
+            margin-top: 10px;
+        }
+
+        button {
+            background-color: #555;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            cursor: pointer;
+            margin-top: 10px;
+            border-radius: 20px;
+            font-size: 18px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #777;
+        }
+
+        #content {
+            margin: 20px;
+        }
+
+        #timer-content {
+            text-align: center;
+            font-size: 24px;
+            margin-top: 20px;
+        }
+
+        /* Table styles for Tally tool */
+        table {
+            border-collapse: collapse;
+            width: 80%;
+            margin: 0 auto;
+        }
+
+        th, td {
+            border: 1px solid #555;
+            padding: 10px;
+            text-align: center;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Game Tools</h1>
+
+    <div class="button-bar">
+        <button id="number-generator-button">Number Generator</button>
+        <button id="name-generator-button">Name Generator</button>
+        <button id="timer-button">Timer</button>
+        <button id="tally-button">Tally</button>
+    </div>
+
+    <div id="content">
+        <!-- Content for each tool will be displayed here -->
+    </div>
+
+    <audio id="alarm-sound" src="alarm.mp3" preload="auto"></audio>
+
+    <script>
+        function clearContent() {
+            document.getElementById('content').innerHTML = '';
+        }
+
+        // Number Generator
+        document.getElementById('number-generator-button').addEventListener('click', function () {
+            clearContent();
+
+            const toolBox = document.createElement('div');
+            toolBox.className = 'tool-box center';
+
+            const startNumberInput = document.createElement('input');
+            startNumberInput.type = 'number';
+            startNumberInput.placeholder = 'Enter the starting number';
+            startNumberInput.style.fontSize = '18px';
+            startNumberInput.style.borderRadius = '20px';
+
+            const endNumberInput = document.createElement('input');
+            endNumberInput.type = 'number';
+            endNumberInput.placeholder = 'Enter the ending number';
+            endNumberInput.style.fontSize = '18px';
+            endNumberInput.style.borderRadius = '20px';
+
+            const generateButton = document.createElement('button');
+            generateButton.textContent = 'Generate Number';
+
+            const resultParagraph = document.createElement('p');
+
+            generateButton.addEventListener('click', function () {
+                const startNumber = parseInt(startNumberInput.value);
+                const endNumber = parseInt(endNumberInput.value);
+
+                if (!isNaN(startNumber) && !isNaN(endNumber)) {
+                    const randomNumber = Math.floor(Math.random() * (endNumber - startNumber + 1)) + startNumber;
+                    resultParagraph.textContent = `Random Number: ${randomNumber}`;
+                } else {
+                    resultParagraph.textContent = 'Invalid input. Please enter valid numbers.';
+                }
+            });
+
+            toolBox.appendChild(startNumberInput);
+            toolBox.appendChild(endNumberInput);
+            toolBox.appendChild(generateButton);
+            toolBox.appendChild(resultParagraph);
+
+            document.getElementById('content').appendChild(toolBox);
+        });
+
+        // Name Generator
+        document.getElementById('name-generator-button').addEventListener('click', function () {
+            clearContent();
+
+            const toolBox = document.createElement('div');
+            toolBox.className = 'tool-box center';
+
+            const namesInput = document.createElement('input');
+            namesInput.type = 'text';
+            namesInput.placeholder = 'Enter names separated by commas';
+            namesInput.style.fontSize = '18px';
+            namesInput.style.borderRadius = '20px';
+
+            const generateButton = document.createElement('button');
+            generateButton.textContent = 'Generate Name';
+
+            const resultParagraph = document.createElement('p');
+
+            generateButton.addEventListener('click', function () {
+                const nameArray = namesInput.value.split(',');
+
+                if (namesInput.value.trim() !== '') {
+                    const randomIndex = Math.floor(Math.random() * nameArray.length);
+                    const randomName = nameArray[randomIndex].trim();
+                    resultParagraph.textContent = `Random Name: ${randomName}`;
+                } else {
+                    resultParagraph.textContent = 'No names entered.';
+                }
+            });
+
+            toolBox.appendChild(namesInput);
+            toolBox.appendChild(generateButton);
+            toolBox.appendChild(resultParagraph);
+
+            document.getElementById('content').appendChild(toolBox);
+        });
+
+        // Tally
+        document.getElementById('tally-button').addEventListener('click', function () {
+            clearContent();
+
+            const toolBox = document.createElement('div');
+            toolBox.className = 'tool-box center';
+
+            const table = document.createElement('table');
+
+            const team1NameInput = document.createElement('input');
+            team1NameInput.type = 'text';
+            team1NameInput.placeholder = 'Enter Team 1 Name';
+            team1NameInput.style.fontSize = '18px';
+            team1NameInput.style.borderRadius = '20px';
+
+            const team2NameInput = document.createElement('input');
+            team2NameInput.type = 'text';
+            team2NameInput.placeholder = 'Enter Team 2 Name';
+            team2NameInput.style.fontSize = '18px';
+            team2NameInput.style.borderRadius = '20px';
+
+            const team1Button = document.createElement('button');
+            team1Button.textContent = '+1';
+
+            const team2Button = document.createElement('button');
+            team2Button.textContent = '+1';
+
+            const resetButton = document.createElement('button');
+            resetButton.textContent = 'Reset Tally';
+
+            const team1ScoreCell = document.createElement('td');
+            team1ScoreCell.textContent = 'Team 1: 0';
+            team1ScoreCell.className = 'team-name';
+
+            const team2ScoreCell = document.createElement('td');
+            team2ScoreCell.textContent = 'Team 2: 0';
+            team2ScoreCell.className = 'team-name';
+
+            let team1Score = 0;
+            let team2Score = 0;
+
+            team1Button.addEventListener('click', function () {
+                team1Score++;
+                team1ScoreCell.textContent = `Team 1: ${team1Score}`;
+            });
+
+            team2Button.addEventListener('click', function () {
+                team2Score++;
+                team2ScoreCell.textContent = `Team 2: ${team2Score}`;
+            });
+
+            resetButton.addEventListener('click', function () {
+                team1Score = 0;
+                team2Score = 0;
+                team1ScoreCell.textContent = 'Team 1: 0';
+                team2ScoreCell.textContent = 'Team 2: 0';
+                document.getElementById('alarm-sound').pause(); // Stop the sound
+            });
+
+            const row1 = document.createElement('tr');
+            const row2 = document.createElement('tr');
+
+            const cell1 = document.createElement('td');
+            const cell2 = document.createElement('td');
+
+            cell1.appendChild(team1NameInput);
+            cell2.appendChild(team2NameInput);
+
+            row1.appendChild(cell1);
+            row2.appendChild(cell2);
+
+            table.appendChild(row1);
+            table.appendChild(row2);
+
+            const row3 = document.createElement('tr');
+            const row4 = document.createElement('tr');
+
+            const cell3 = document.createElement('td');
+            const cell4 = document.createElement('td');
+
+            cell3.appendChild(team1Button);
+            cell4.appendChild(team2Button);
+
+            row3.appendChild(cell3);
+            row4.appendChild(cell4);
+
+            table.appendChild(row3);
+            table.appendChild(row4);
+
+            const row5 = document.createElement('tr');
+            const row6 = document.createElement('tr');
+
+            const cell5 = document.createElement('td');
+            const cell6 = document.createElement('td');
+
+            cell5.appendChild(team1ScoreCell);
+            cell6.appendChild(team2ScoreCell);
+
+            row5.appendChild(cell5);
+            row6.appendChild(cell6);
+
+            table.appendChild(row5);
+            table.appendChild(row6);
+
+            toolBox.appendChild(table);
+            toolBox.appendChild(resetButton);
+
+            document.getElementById('content').appendChild(toolBox);
+        });
+
+        // Timer
+        document.getElementById('timer-button').addEventListener('click', function () {
+            clearContent();
+
+            const toolBox = document.createElement('div');
+            toolBox.className = 'tool-box center';
+
+            const timeInput = document.createElement('input');
+            timeInput.type = 'number';
+            timeInput.placeholder = 'Enter the time in seconds';
+            timeInput.style.fontSize = '18px';
+            timeInput.style.borderRadius = '20px';
+
+            const setTimeButton = document.createElement('button');
+            setTimeButton.textContent = 'Set Time';
+
+            const startButton = document.createElement('button');
+            startButton.textContent = 'Start';
+
+            const pauseResumeButton = document.createElement('button');
+            pauseResumeButton.textContent = 'Pause/Resume';
+
+            const resetButton = document.createElement('button');
+            resetButton.textContent = 'Reset';
+
+            const timerDisplay = document.createElement('p');
+            timerDisplay.id = 'timer-content';
+
+            let timerInterval;
+            let originalTime = 0;
+            let currentTime = 0;
+            let timerRunning = false;
+
+            setTimeButton.addEventListener('click', function () {
+                const time = parseInt(timeInput.value);
+                if (!isNaN(time) && time > 0) {
+                    originalTime = time;
+                    currentTime = time;
+                    timerDisplay.textContent = `Time: ${originalTime} seconds`;
+                } else {
+                    alert('Invalid input. Please enter a valid time in seconds.');
+                }
+            });
+
+            startButton.addEventListener('click', function () {
+                if (originalTime === 0) {
+                    alert('Please set the time before starting the timer.');
+                    return;
+                }
+                if (!timerRunning) {
+                    timerInterval = setInterval(updateTimer, 1000);
+                    timerRunning = true;
+                }
+            });
+
+            pauseResumeButton.addEventListener('click', function () {
+                if (timerRunning) {
+                    clearInterval(timerInterval);
+                    timerRunning = false;
+                } else {
+                    timerInterval = setInterval(updateTimer, 1000);
+                    timerRunning = true;
+                }
+            });
+
+            resetButton.addEventListener('click', function () {
+                clearInterval(timerInterval);
+                timerRunning = false;
+                currentTime = originalTime;
+                timerDisplay.textContent = `Time: ${originalTime} seconds`;
+                document.getElementById('alarm-sound').pause(); // Stop the sound
+            });
+
+            function updateTimer() {
+                if (currentTime === 0) {
+                    clearInterval(timerInterval);
+                    timerRunning = false;
+                    timerDisplay.textContent = 'Time is up!';
+                    document.getElementById('alarm-sound').play();
+                } else {
+                    currentTime--;
+                    timerDisplay.textContent = `Time: ${currentTime} seconds`;
+                }
+            }
+
+            toolBox.appendChild(timeInput);
+            toolBox.appendChild(setTimeButton);
+            toolBox.appendChild(startButton);
+            toolBox.appendChild(pauseResumeButton);
+            toolBox.appendChild(resetButton);
+            toolBox.appendChild(timerDisplay);
+
+            document.getElementById('content').appendChild(toolBox);
+        });
+    </script>
+</body>
+</html>
